@@ -1,0 +1,15 @@
+[project]
+name = "v93-bp-simulation-von-quantenschaltungen"
+version = "0.1.0"
+description = "BP Uni Stuttgart - Simulation von Quantenschaltungen"
+readme = "README.md"
+authors = [
+    { name = "jona-sh" },
+    {name = "felglo" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
