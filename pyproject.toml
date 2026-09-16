@@ -24,3 +24,8 @@ extend-select = ["NPY"]
 
 [tool.mypy]
 disable_error_code = ["import-untyped"]
+
+[dependency-groups]
+dev = [
+    "sphinx>=9.1.0",
+]

@@ -3,3 +3,6 @@ __pycache__/
 .venv/
 uv.lock
 .ipynb_checkpoints
+.mypy_cache
+.pytest_cache
+.ruff_cache
