@@ -37,8 +37,35 @@ def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
 def _apply_unitary(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
-    return np.array([])
+    N = int(np.log2(len(statevector)))
+    assert 0 <= qubit < N, "qubit index out of range"
+    psi = np.reshape(statevector, (2,) * N, order="F")
+    s = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    s[:N]
+    I = s[qubit]
+    to = s[:qubit] + "a" + s[qubit + 1 : N]
+    psi_new = np.einsum(f"a{I},{s[:N]}->{to}", operator, psi)
+    return np.reshape(psi_new, -1, order="F")
 
 
 def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
-    return np.array([])
+    i, j = control, target
+    N = len(statevector.shape)
+
+    assert 0 <= control < N, "qubit index out of range"
+    assert 0 <= target < N, "qubit index out of range"
+    assert control != target, "control and target qubits must be different"
+
+    cx = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
+    cx = np.reshape(cx, (2,) * 4, order="F")
+
+    s = "cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    s[:N]
+    I = s[i]
+    J = s[j]
+    if i < j:
+        to = s[:i] + "a" + s[i + 1 : j] + "b" + s[j + 1 : N]
+    else:
+        to = s[:j] + "b" + s[j + 1 : i] + "a" + s[i + 1 : N]
+    psi_new = np.einsum(f"ab{I}{J},{s[:N]}->{to}", cx, statevector)
+    return psi_new
