@@ -1,5 +1,5 @@
 [project]
-name = "v93-bp-simulation-von-quantenschaltungen"
+name = "q_simulator"
 version = "0.1.0"
 description = "BP Uni Stuttgart - Simulation von Quantenschaltungen"
 readme = "README.md"
@@ -10,6 +10,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "numpy>=2.5.3",
+    "qiskit>=2.5.2",
 ]
 
 [build-system]
