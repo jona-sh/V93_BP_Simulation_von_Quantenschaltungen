@@ -1,5 +1,5 @@
 import numpy as np
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 
 from .objects import Configuration, Result
@@ -30,12 +30,13 @@ def _simulate_default(qc: QuantumCircuit, config: Configuration) -> Result:
 
 def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
     ns = config.number_of_shots
-    transpiled_qc = qc.transpile(optimization_level=0, basis_gates=["u3", "cx"])
+    transpiled_qc = transpile(qc, optimization_level=0, basis_gates=["u3", "cx"])
     num_qubits = transpiled_qc.num_qubits
     statevector = np.zeros(2**num_qubits, dtype=complex)
     state = np.reshape(statevector, (2,) * num_qubits, order="F")
 
     for instr in transpiled_qc.data:
+        # print(123476,instr)
         name = instr[0].name
         qubits = [q.index for q in instr[1]]
         if name == "u":
