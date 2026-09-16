@@ -2,7 +2,7 @@ import numpy as np
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 
-from .objects import Configuration, Result
+from .objects import CX, Configuration, Result
 
 
 def simulate(qc: QuantumCircuit, config: Configuration) -> Result:
@@ -29,17 +29,16 @@ def _simulate_default(qc: QuantumCircuit, config: Configuration) -> Result:
 
 
 def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
-    ns = config.number_of_shots
     transpiled_qc = transpile(qc, optimization_level=0, basis_gates=["u3", "cx"])
     num_qubits = transpiled_qc.num_qubits
     statevector = np.zeros(2**num_qubits, dtype=complex)
+    statevector[0] = 1
     state = np.reshape(statevector, (2,) * num_qubits, order="F")
 
     for instr in transpiled_qc.data:
-        # print(123476,instr)
         name = instr.operation.name
-        qubits = [q for q in instr.qubits]
-        if name == "u":
+        qubits = [transpiled_qc.find_bit(q).index for q in instr.qubits]
+        if name in {"u", "u3"}:
             matrix = instr.operation.to_matrix()
             state = _apply_unitary(state, matrix, qubits[0])
         elif name == "cx":
@@ -50,12 +49,11 @@ def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
             raise ValueError(f"Unsupported gate: {name}")
 
     final_statevector = np.reshape(state, -1, order="F")
-    countslist = np.abs(final_statevector) ** 2
-    countslist = np.round(countslist * ns).astype(int)
+    probabilities = np.abs(final_statevector) ** 2
     counts = {}
-    for i, count in enumerate(countslist):
-        if count > 0:
-            counts[f"{i:0{transpiled_qc.num_qubits}b}"] = count
+    for i, probability in enumerate(probabilities):
+        if probability > 0:
+            counts[f"{i:0{transpiled_qc.num_qubits}b}"] = probability
 
     return Result(counts=counts, statevector=final_statevector)
 
@@ -66,7 +64,6 @@ def _apply_unitary(
     N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
     s = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    s[:N]
     I = s[qubit]
     to = s[:qubit] + "a" + s[qubit + 1 : N]
     psi_new = np.einsum(f"a{I},{s[:N]}->{to}", operator, statevector)
@@ -81,16 +78,12 @@ def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.n
     assert 0 <= target < N, "qubit index out of range"
     assert control != target, "control and target qubits must be different"
 
-    cx = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
-    cx = np.reshape(cx, (2,) * 4, order="F")
-
     s = "cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    s[:N]
     I = s[i]
     J = s[j]
     if i < j:
         to = s[:i] + "a" + s[i + 1 : j] + "b" + s[j + 1 : N]
     else:
         to = s[:j] + "b" + s[j + 1 : i] + "a" + s[i + 1 : N]
-    psi_new = np.einsum(f"ab{I}{J},{s[:N]}->{to}", cx, statevector)
+    psi_new = np.einsum(f"ab{I}{J},{s[:N]}->{to}", CX, statevector)
     return psi_new
