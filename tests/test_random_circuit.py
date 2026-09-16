@@ -7,6 +7,7 @@ import q_simulator as qs
 
 
 def test_simulate_default_1():
+    tol = 15
     qc = QuantumCircuit(4)
     qc.h([0, 1, 2, 3])
     ns = 2**16
@@ -18,12 +19,13 @@ def test_simulate_default_1():
 
     qc.measure_all()
 
-    aer_sim = AerSimulator(shots=ns)
-    result_tmp = aer_sim.run(qc).result()
-    result_aer = qs.Result(counts=result_tmp.get_counts(), statevector=statevector.data)
+    aer_sim = AerSimulator()
+    result_cnt = aer_sim.run(qc, shots=ns).result().get_counts()
+    result_aer = qs.Result(counts=result_cnt, statevector=statevector.data)
     assert isinstance(result_aer, qs.Result)
     assert np.allclose(result_aer.statevector, result.statevector)
-    # assert result_aer.counts == result.counts
-
-
-test_simulate_default_1()
+    print(result.counts)
+    print(result_aer.counts)
+    for k, v in result_aer.counts.items():
+        assert k in result.counts
+        assert abs(result.counts[k] * ns - v) < tol
