@@ -1,6 +1,5 @@
-# import numpy as np
+import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.quantum_info import Statevector
 from qiskit_aer import AerSimulator
 
 from .objects import Configuration, Result
@@ -15,9 +14,13 @@ def simulate(qc: QuantumCircuit, config: Configuration) -> Result:
 
 
 def _simulate_default(qc: QuantumCircuit, config: Configuration) -> Result:
-    qc.remove_final_measurements()
-    statevector = Statevector.from_instruction(qc)
-    qc.measure_all()
-    aer_sim = AerSimulator(shots=config.number_of_shots)
-    result = aer_sim.run(qc).result()
-    return Result(counts=result.get_counts(), statevector=statevector.data)
+
+    qc_to_run = qc.copy()
+    qc_to_run.save_statevector()
+
+    backend = AerSimulator()
+    result = backend.run(qc_to_run, shots=config.number_of_shots).result()
+    counts = result.get_counts(qc_to_run)
+    statevector = np.asarray(result.get_statevector(qc_to_run))
+
+    return Result(counts=counts, statevector=statevector)
