@@ -37,10 +37,10 @@ def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
 
     for instr in transpiled_qc.data:
         # print(123476,instr)
-        name = instr[0].name
-        qubits = [q.index for q in instr[1]]
+        name = instr.operation.name
+        qubits = [q for q in instr.qubits]
         if name == "u":
-            matrix = instr[0].to_matrix()
+            matrix = instr.operation.to_matrix()
             state = _apply_unitary(state, matrix, qubits[0])
         elif name == "cx":
             state = _apply_cx_einsum(state, qubits[0], qubits[1])
