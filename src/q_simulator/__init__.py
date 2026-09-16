@@ -1,3 +1,9 @@
+from .objects import CX as CX
 from .objects import Configuration as Configuration
+from .objects import H as H
 from .objects import Result as Result
+from .objects import S as S
+from .objects import X as X
+from .objects import Y as Y
+from .objects import Z as Z
 from .simulate import simulate as simulate
