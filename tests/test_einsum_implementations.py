@@ -4,6 +4,7 @@ import q_simulator as qs
 
 
 def test_einsum_single():
+    """test the einsum implementation of the H gate on a single qubit"""
     for N in [2, 5, 7]:
         for i in range(N):
             statevec = np.array([0] * (2**N), dtype=complex)

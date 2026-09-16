@@ -1,3 +1,5 @@
+"""Simulation backends and tensor-network gate operations."""
+
 import numpy as np
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
@@ -6,6 +8,14 @@ from .objects import CX, Configuration, Result
 
 
 def simulate(qc: QuantumCircuit, config: Configuration) -> Result:
+    """Simulate a Qiskit quantum circuit.
+
+    :param qc: Circuit to execute.
+    :param config: Backend and shot-count configuration.
+    :returns: Measurement results and the final state vector.
+    :raises ValueError: If ``config.method`` is not supported.
+    """
+
     match config.method:
         case "default":
             return _simulate_default(qc, config)

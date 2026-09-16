@@ -6,14 +6,14 @@
 q_simulator documentation
 =========================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+``q_simulator`` is an educational quantum-circuit simulator. It accepts
+Qiskit circuits and provides both a Qiskit Aer backend and a NumPy
+``einsum`` backend.
 
 
 .. toctree::
    :maxdepth: 2
    :hidden:
 
-installation.rst
-api.rst
+   installation
+   api
