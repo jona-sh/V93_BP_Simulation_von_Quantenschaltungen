@@ -1,13 +1,17 @@
-# import numpy as np
-# import pytest
-# from qiskit import QuantumCircuit
-# from qiskit.quantum_info import Statevector
-# from qiskit_aer import AerSimulator
+import numpy as np
 
-# import q_simulator as qs
+import q_simulator as qs
 
 
-# def test_einsum_single():
-#     N = 5
-#     psi = np.array([1] + [0] * (2**N - 1), dtype=complex)
-#     result = qs._apply_single_qubit_gate(psi, qs.H, 2)
+def test_einsum_single():
+    for N in [2, 5, 7]:
+        for i in range(N):
+            statevec = np.array([0] * (2**N), dtype=complex)
+            statevec[0] = 1
+            psi = np.reshape(statevec, (2,) * N, order="F")
+            statevec_soll = np.array([0] * (2**N), dtype=complex)
+            statevec_soll[2**i] = statevec_soll[0] = 1 / np.sqrt(2)
+            psi_soll = np.reshape(statevec_soll, (2,) * N, order="F")
+            result = qs._apply_unitary(psi, qs.H, i)
+            print(result, psi_soll)
+            assert np.allclose(result, psi_soll)

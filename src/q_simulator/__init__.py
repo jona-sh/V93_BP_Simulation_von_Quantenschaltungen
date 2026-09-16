@@ -6,4 +6,6 @@ from .objects import S as S
 from .objects import X as X
 from .objects import Y as Y
 from .objects import Z as Z
+from .simulate import _apply_cx_einsum as _apply_cx_einsum
+from .simulate import _apply_unitary as _apply_unitary
 from .simulate import simulate as simulate

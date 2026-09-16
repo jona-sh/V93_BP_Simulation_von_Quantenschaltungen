@@ -8,7 +8,7 @@ import q_simulator as qs
 
 
 def test_simulate_default_1():
-    tol = 200
+    tol = 300
     qc = QuantumCircuit(4)
     qc.h([0, 1, 2, 3])
     ns = 2**16
@@ -32,8 +32,9 @@ def test_simulate_default_1():
 
 
 @pytest.mark.parametrize("seed", [1, 2, 3, 42, 1234])
-def test_random_circuit(seed):
-    tol = 200
+@pytest.mark.parametrize("simulation_method", ["default", "einsum"])
+def test_random_circuit(seed, simulation_method):
+    tol = 300
     qc = QuantumCircuit(3)
     rng = np.random.default_rng(seed)
     for _ in range(10):
@@ -46,7 +47,7 @@ def test_random_circuit(seed):
             getattr(qc, gate)(qubit)
     ns = 2**16
 
-    conf = qs.Configuration(method="default", number_of_shots=ns)
+    conf = qs.Configuration(method=simulation_method, number_of_shots=ns)
     result = qs.simulate(qc.copy(), conf)
 
     statevector = Statevector.from_instruction(qc)

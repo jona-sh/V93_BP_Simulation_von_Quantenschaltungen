@@ -37,15 +37,14 @@ def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
 def _apply_unitary(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
-    N = int(np.log2(len(statevector)))
+    N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
-    psi = np.reshape(statevector, (2,) * N, order="F")
     s = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     s[:N]
     I = s[qubit]
     to = s[:qubit] + "a" + s[qubit + 1 : N]
-    psi_new = np.einsum(f"a{I},{s[:N]}->{to}", operator, psi)
-    return np.reshape(psi_new, -1, order="F")
+    psi_new = np.einsum(f"a{I},{s[:N]}->{to}", operator, statevector)
+    return psi_new
 
 
 def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
