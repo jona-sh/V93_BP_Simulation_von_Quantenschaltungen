@@ -10,10 +10,15 @@ from .objects import CX, Configuration, Result
 def simulate(qc: QuantumCircuit, config: Configuration) -> Result:
     """Simulate a Qiskit quantum circuit.
 
-    :param qc: Circuit to execute.
-    :param config: Backend and shot-count configuration.
-    :returns: Measurement results and the final state vector.
-    :raises ValueError: If ``config.method`` is not supported.
+    Args:
+        qc: Qiskit Quantum Circuit Object to execute.
+        config: Simulation configuration. Object of type ``Configuration`` containing the simulation method and number of shots.
+
+    Returns:
+        Simulation results. Object of type ``Result`` containing the measurement counts and the final statevector.
+
+    Raises:
+        ValueError: If ``config.method`` is not supported.
     """
 
     match config.method:
@@ -26,7 +31,15 @@ def simulate(qc: QuantumCircuit, config: Configuration) -> Result:
 
 
 def _simulate_default(qc: QuantumCircuit, config: Configuration) -> Result:
+    """Simulate a Qiskit quantum circuit using the default AerSimulator backend.
 
+    Args:
+        qc: Qiskit Quantum Circuit Object to execute.
+        config: Simulation configuration. Object of type ``Configuration`` containing the simulation method and number of shots.
+
+    Returns:
+        Simulation results. Object of type ``Result`` containing the measurement counts and the final statevector.
+    """
     qc_to_run = qc.copy()
     qc_to_run.save_statevector()
 
@@ -39,6 +52,15 @@ def _simulate_default(qc: QuantumCircuit, config: Configuration) -> Result:
 
 
 def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
+    """Simulate a Qiskit quantum circuit using the einsum-based tensor-network implementation.
+
+    Args:
+        qc: Qiskit Quantum Circuit Object to execute.
+        config: Simulation configuration. Object of type ``Configuration`` containing the simulation method and number of shots.
+
+    Returns:
+        Simulation results. Object of type ``Result`` containing the measurement counts and the final statevector.
+    """
     transpiled_qc = transpile(qc, optimization_level=0, basis_gates=["u3", "cx"])
     num_qubits = transpiled_qc.num_qubits
     statevector = np.zeros(2**num_qubits, dtype=complex)
@@ -71,6 +93,16 @@ def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
 def _apply_unitary(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
+    """Apply a single-qubit unitary operator to a specific qubit in the statevector using einsum.
+
+    Args:
+        statevector: The current statevector of the quantum system as a tensor.
+        operator: The unitary operator to apply.
+        qubit: The index of the qubit to apply the operator to.
+
+    Returns:
+        The updated statevector after applying the operator as a tensor.
+    """
     N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
     s = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -81,6 +113,16 @@ def _apply_unitary(
 
 
 def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
+    """Apply a CNOT gate to the statevector using einsum.
+
+    Args:
+        statevector: The current statevector of the quantum system as a tensor.
+        control: The index of the control qubit.
+        target: The index of the target qubit.
+
+    Returns:
+        The updated statevector after applying the CNOT gate  as a tensor.
+    """
     i, j = control, target
     N = len(statevector.shape)
 

@@ -23,6 +23,8 @@ extensions = [
 ]
 
 autosummary_generate = True
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]

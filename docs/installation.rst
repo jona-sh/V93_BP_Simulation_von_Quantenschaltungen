@@ -14,8 +14,8 @@ Run the test suite with:
 
    uv run pytest
 
-Build the HTML documentation with:
+Build the HTML documentation with running the following command in the docs folder:
 
 .. code-block:: console
 
-   uv run sphinx-build -b html docs docs/_build/html
+   uv run .\\make.bat html
