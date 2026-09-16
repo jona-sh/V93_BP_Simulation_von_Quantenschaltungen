@@ -29,9 +29,34 @@ def _simulate_default(qc: QuantumCircuit, config: Configuration) -> Result:
 
 
 def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
-    _apply_unitary(np.array([]), np.array([]), 0)
-    _apply_cx_einsum(np.array([]), 0, 1)
-    return Result(counts={}, statevector=np.array([]))
+    ns = config.number_of_shots
+    transpiled_qc = qc.transpile(optimization_level=0, basis_gates=["u3", "cx"])
+    num_qubits = transpiled_qc.num_qubits
+    statevector = np.zeros(2**num_qubits, dtype=complex)
+    state = np.reshape(statevector, (2,) * num_qubits, order="F")
+
+    for instr in transpiled_qc.data:
+        name = instr[0].name
+        qubits = [q.index for q in instr[1]]
+        if name == "u":
+            matrix = instr[0].to_matrix()
+            state = _apply_unitary(state, matrix, qubits[0])
+        elif name == "cx":
+            state = _apply_cx_einsum(state, qubits[0], qubits[1])
+        elif name == "measure" or name == "barrier":
+            pass
+        else:
+            raise ValueError(f"Unsupported gate: {name}")
+
+    final_statevector = np.reshape(state, -1, order="F")
+    countslist = np.abs(final_statevector) ** 2
+    countslist = np.round(countslist * ns).astype(int)
+    counts = {}
+    for i, count in enumerate(countslist):
+        if count > 0:
+            counts[f"{i:0{transpiled_qc.num_qubits}b}"] = count
+
+    return Result(counts=counts, statevector=final_statevector)
 
 
 def _apply_unitary(
