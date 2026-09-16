@@ -11,6 +11,7 @@ requires-python = ">=3.13"
 dependencies = [
     "numpy>=2.5.3",
     "qiskit>=2.5.2",
+    "qiskit-aer>=0.17.2",
 ]
 
 [build-system]
@@ -19,3 +20,6 @@ build-backend = "uv_build"
 
 [tool.ruff.lint]
 extend-select = ["NPY"]
+
+[tool.mypy]
+disable_error_code = ["import-untyped"]
