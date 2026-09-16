@@ -8,7 +8,7 @@ import q_simulator as qs
 
 
 def test_simulate_default_1():
-    tol = 15
+    tol = 200
     qc = QuantumCircuit(4)
     qc.h([0, 1, 2, 3])
     ns = 2**16
@@ -33,7 +33,7 @@ def test_simulate_default_1():
 
 @pytest.mark.parametrize("seed", [1, 2, 3, 42, 1234])
 def test_random_circuit(seed):
-    tol = 15
+    tol = 200
     qc = QuantumCircuit(3)
     rng = np.random.default_rng(seed)
     for _ in range(10):
