@@ -1,6 +1,7 @@
 """Time all simulator methods on the test circuit."""
 
 import time
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 from qiskit.circuit.random import random_circuit
@@ -69,5 +70,6 @@ plt.ylabel("Time (s)")
 plt.title("Performance Comparison")
 plt.legend()
 
-
-plt.show()  # savefig('simulation_performance.png')
+benchmark_dir = Path(__file__).resolve().parent
+plot_path = benchmark_dir / "simulation_performance.png"
+plt.savefig(plot_path, dpi=200)
