@@ -98,6 +98,15 @@ def _simulate_einsum(qc: QuantumCircuit, config: Configuration) -> Result:
 
 
 def _simulate_loop(qc: QuantumCircuit, config: Configuration) -> Result:
+    """Simulate a Qiskit quantum circuit using the fast loop implementation.
+
+    Args:
+        qc: Qiskit Quantum Circuit Object to execute.
+        config: Simulation configuration. Object of type ``Configuration`` containing the simulation method and number of shots.
+
+    Returns:
+        Simulation results. Object of type ``Result`` containing the measurement counts and the final statevector.
+    """
     transpiled_qc = transpile(qc, optimization_level=0, basis_gates=["u3", "cx"])
     num_qubits = transpiled_qc.num_qubits
     statevector = np.zeros(2**num_qubits, dtype=complex)
@@ -128,6 +137,15 @@ def _simulate_loop(qc: QuantumCircuit, config: Configuration) -> Result:
 
 
 def _simulate_numba(qc: QuantumCircuit, config: Configuration) -> Result:
+    """Simulate a Qiskit quantum circuit using the numba-accelerated fast loop implementation.
+
+    Args:
+        qc: Qiskit Quantum Circuit Object to execute.
+        config: Simulation configuration. Object of type ``Configuration`` containing the simulation method and number of shots.
+
+    Returns:
+        Simulation results. Object of type ``Result`` containing the measurement counts and the final statevector.
+    """
     transpiled_qc = transpile(qc, optimization_level=0, basis_gates=["u3", "cx"])
     num_qubits = transpiled_qc.num_qubits
     statevector = np.zeros(2**num_qubits, dtype=complex)
@@ -211,7 +229,7 @@ def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.n
 def _apply_unitary_loop(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
-    """Apply a single-qubit unitary operator to a specific qubit in the statevector using the fast loop method which was implemented for performance reasons.
+    """Apply a single-qubit unitary operator to a specific qubit in the statevector using the fast loop method.
 
     Args:
         statevector: The current statevector of the quantum system as a tensor.
@@ -242,7 +260,7 @@ def _apply_unitary_loop(
 
 
 def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
-    """Apply a CNOT gate to the statevector using the fast loop method which was implemented for performance reasons.
+    """Apply a CNOT gate to the statevector using the fast loop method.
 
     Args:
         statevector: The current statevector of the quantum system as a tensor.
@@ -273,15 +291,15 @@ def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.nda
 def _apply_unitary_numba(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
-    """Apply a single-qubit unitary operator to a specific qubit in the statevector using the fast loop method which was implemented for performance reasons.
+    """Apply a single-qubit unitary operator to a specific qubit in the statevector using the fast loop method with numba speedup.
 
     Args:
-        statevector: The current statevector of the quantum system as a tensor.
+        statevector: The current statevector of the quantum system as a vector.
         operator: The unitary operator to apply.
         qubit: The index of the qubit to apply the operator to.
 
     Returns:
-        The updated statevector after applying the operator as a tensor.
+        The updated statevector after applying the operator as a vector.
     """
     N = int(np.log2(statevector.size))
     assert 0 <= qubit < N, "qubit index out of range"
@@ -305,15 +323,15 @@ def _apply_unitary_numba(
 
 @njit
 def _apply_cx_numba(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
-    """Apply a CNOT gate to the statevector using the fast loop method which was implemented for performance reasons.
+    """Apply a CNOT gate to the statevector using the fast loop method with numba speedup.
 
     Args:
-        statevector: The current statevector of the quantum system as a tensor.
+        statevector: The current statevector of the quantum system as a vector.
         control: The index of the control qubit.
         target: The index of the target qubit.
 
     Returns:
-        The updated statevector after applying the CNOT gate  as a tensor.
+        The updated statevector after applying the CNOT gate  as a vector.
     """
     N = int(np.log2(statevector.size))
 
