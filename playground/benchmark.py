@@ -6,7 +6,7 @@ from qiskit.circuit.random import random_circuit
 
 import q_simulator as qs
 
-circuit = random_circuit(18, 50)
+circuit = random_circuit(10, 50)
 circuit.draw()
 config = qs.Configuration(number_of_shots=2**16)
 

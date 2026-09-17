@@ -224,21 +224,21 @@ def _apply_unitary_loop(
     N = int(np.log2(statevector.size))
     assert 0 <= qubit < N, "qubit index out of range"
 
-    psi_new = statevector.copy()
     for r in range(2**qubit):
         for s in range(2 ** (N - qubit - 1)):
             index = r + s * 2 ** (qubit + 1)
             partner = index + 2**qubit
 
-            psi_new[index] = (
-                operator[0, 0] * statevector[index]
+            statevector_index = statevector[index]
+            statevector[index] = (
+                operator[0, 0] * statevector_index
                 + operator[0, 1] * statevector[partner]
             )
-            psi_new[partner] = (
-                operator[1, 0] * statevector[index]
+            statevector[partner] = (
+                operator[1, 0] * statevector_index
                 + operator[1, 1] * statevector[partner]
             )
-    return psi_new
+    return statevector
 
 
 def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
@@ -258,15 +258,15 @@ def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.nda
     assert 0 <= target < N, "qubit index out of range"
     assert control != target, "control and target qubits must be different"
 
-    psi_new = statevector.copy()
     for r in range(2**target):
         for s in range(2 ** (N - target - 1)):
             index = r + s * 2 ** (target + 1)
             partner = index + 2**target
             if (index >> control) & 1:
-                psi_new[index] = statevector[partner]
-                psi_new[partner] = statevector[index]
-    return psi_new
+                temp = statevector[index]
+                statevector[index] = statevector[partner]
+                statevector[partner] = temp
+    return statevector
 
 
 @njit
@@ -286,21 +286,21 @@ def _apply_unitary_numba(
     N = int(np.log2(statevector.size))
     assert 0 <= qubit < N, "qubit index out of range"
 
-    psi_new = statevector.copy()
     for r in range(2**qubit):
         for s in range(2 ** (N - qubit - 1)):
             index = r + s * 2 ** (qubit + 1)
             partner = index + 2**qubit
 
-            psi_new[index] = (
-                operator[0, 0] * statevector[index]
+            statevector_index = statevector[index]
+            statevector[index] = (
+                operator[0, 0] * statevector_index
                 + operator[0, 1] * statevector[partner]
             )
-            psi_new[partner] = (
-                operator[1, 0] * statevector[index]
+            statevector[partner] = (
+                operator[1, 0] * statevector_index
                 + operator[1, 1] * statevector[partner]
             )
-    return psi_new
+    return statevector
 
 
 @njit
@@ -321,12 +321,12 @@ def _apply_cx_numba(statevector: np.ndarray, control: int, target: int) -> np.nd
     assert 0 <= target < N, "qubit index out of range"
     assert control != target, "control and target qubits must be different"
 
-    psi_new = statevector.copy()
     for r in range(2**target):
         for s in range(2 ** (N - target - 1)):
             index = r + s * 2 ** (target + 1)
             partner = index + 2**target
             if (index >> control) & 1:
-                psi_new[index] = statevector[partner]
-                psi_new[partner] = statevector[index]
-    return psi_new
+                temp = statevector[index]
+                statevector[index] = statevector[partner]
+                statevector[partner] = temp
+    return statevector
