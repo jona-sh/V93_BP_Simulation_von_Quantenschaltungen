@@ -224,7 +224,7 @@ def _apply_unitary_loop(
     N = int(np.log2(statevector.size))
     assert 0 <= qubit < N, "qubit index out of range"
 
-    psi_new = statevector
+    psi_new = statevector.copy()
     for r in range(2**qubit):
         for s in range(2 ** (N - qubit - 1)):
             index = r + s * 2 ** (qubit + 1)
@@ -258,7 +258,7 @@ def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.nda
     assert 0 <= target < N, "qubit index out of range"
     assert control != target, "control and target qubits must be different"
 
-    psi_new = statevector
+    psi_new = statevector.copy()
     for r in range(2**target):
         for s in range(2 ** (N - target - 1)):
             index = r + s * 2 ** (target + 1)
@@ -283,7 +283,6 @@ def _apply_unitary_numba(
     Returns:
         The updated statevector after applying the operator as a tensor.
     """
-    psi_new = np.copy(statevector)
     N = int(np.log2(statevector.size))
     assert 0 <= qubit < N, "qubit index out of range"
 
