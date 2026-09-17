@@ -29,6 +29,7 @@ disable_error_code = ["import-untyped"]
 
 [dependency-groups]
 dev = [
+    "myst-nb>=1.4.0",
     "sphinx>=9.1.0",
     "sphinx-rtd-theme>=3.1.0",
 ]

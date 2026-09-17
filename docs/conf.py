@@ -20,11 +20,13 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
+    "myst_nb",
 ]
 
 autosummary_generate = True
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
+nb_execution_mode = "off"
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]

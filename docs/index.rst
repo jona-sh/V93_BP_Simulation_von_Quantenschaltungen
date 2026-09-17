@@ -17,3 +17,4 @@ Qiskit circuits and provides both a Qiskit Aer backend and a NumPy
 
    installation
    api
+   tutorial-guide
