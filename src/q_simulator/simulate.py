@@ -177,24 +177,26 @@ def _apply_unitary_loop(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
 
-    def _to_bin(i):
-        idx_binary = format(idx, f"0{N}b")
-        return tuple(int(bit) for bit in idx_binary)[::-1]
-
     N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
+
+    def _to_bin(index: int) -> tuple[int, ...]:
+        index_binary = format(index, f"0{N}b")
+        return tuple(int(bit) for bit in index_binary)[::-1]
+
     psi_new = statevector.copy()
     for r in range(2**qubit):
         for s in range(2 ** (N - qubit - 1)):
-            idx = s + r * 2 ** (qubit + 1)
+            index = r + s * 2 ** (qubit + 1)
+            partner = index + 2**qubit
 
-            psi_new[_to_bin(idx)] = (
-                operator[0, 0] * psi_new[_to_bin(idx)]
-                + operator[0, 1] * psi_new[_to_bin(idx + 2**qubit)]
+            psi_new[_to_bin(index)] = (
+                operator[0, 0] * statevector[_to_bin(index)]
+                + operator[0, 1] * statevector[_to_bin(partner)]
             )
-            psi_new[_to_bin(idx + 2**qubit)] = (
-                operator[1, 0] * psi_new[_to_bin(idx)]
-                + operator[1, 1] * psi_new[_to_bin(idx + 2**qubit)]
+            psi_new[_to_bin(partner)] = (
+                operator[1, 0] * statevector[_to_bin(index)]
+                + operator[1, 1] * statevector[_to_bin(partner)]
             )
     return psi_new
 
