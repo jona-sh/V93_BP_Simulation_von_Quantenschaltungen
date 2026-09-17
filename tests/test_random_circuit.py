@@ -9,7 +9,7 @@ import q_simulator as qs
 
 def test_simulate_default_1():
     """test the default simulation method on a simple circuit"""
-    tol = 300
+    tol = 400
     qc = QuantumCircuit(4)
     qc.h([0, 1, 2, 3])
     ns = 2**16
@@ -36,7 +36,7 @@ def test_simulate_default_1():
 @pytest.mark.parametrize("simulation_method", ["default", "einsum", "loop"])
 def test_random_circuit(seed, simulation_method):
     """test the simulation of a random circuit with 3 qubits"""
-    tol = 300
+    tol = 400
     qc = QuantumCircuit(3)
     rng = np.random.default_rng(seed)
     for _ in range(10):

@@ -106,7 +106,7 @@ def _simulate_loop(qc: QuantumCircuit, config: Configuration) -> Result:
             matrix = instr.operation.to_matrix()
             state = _apply_unitary_loop(state, matrix, qubits[0])
         elif name == "cx":
-            state = _apply_cx_einsum_loop(state, qubits[0], qubits[1])
+            state = _apply_cx_loop(state, qubits[0], qubits[1])
         elif name == "measure" or name == "barrier":
             pass
         else:
@@ -176,6 +176,16 @@ def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.n
 def _apply_unitary_loop(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
+    """Apply a single-qubit unitary operator to a specific qubit in the statevector using the fast loop method which was implemented for performance reasons.
+
+    Args:
+        statevector: The current statevector of the quantum system as a tensor.
+        operator: The unitary operator to apply.
+        qubit: The index of the qubit to apply the operator to.
+
+    Returns:
+        The updated statevector after applying the operator as a tensor.
+    """
     psi_new = np.copy(statevector)
     N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
@@ -201,9 +211,17 @@ def _apply_unitary_loop(
     return psi_new
 
 
-def _apply_cx_einsum_loop(
-    statevector: np.ndarray, control: int, target: int
-) -> np.ndarray:
+def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
+    """Apply a CNOT gate to the statevector using the fast loop method which was implemented for performance reasons.
+
+    Args:
+        statevector: The current statevector of the quantum system as a tensor.
+        control: The index of the control qubit.
+        target: The index of the target qubit.
+
+    Returns:
+        The updated statevector after applying the CNOT gate  as a tensor.
+    """
     N = len(statevector.shape)
 
     assert 0 <= control < N, "qubit index out of range"
