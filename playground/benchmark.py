@@ -26,7 +26,7 @@ depths_iterate = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 750]
 for qubits in qubits_iterate:
     print(f"Simulating circuit with {qubits} qubits and depth 50")
     circuit = random_circuit(qubits, 50)
-    circuit.draw()
+    # circuit.draw()
     config = qs.Configuration(number_of_shots=2**16)
     for method in ["default", "einsum", "loop", "numba"]:
         if method == "loop" and qubits >= 13:
@@ -43,7 +43,7 @@ for qubits in qubits_iterate:
 for depth in depths_iterate:
     print(f"Simulating circuit with 15 qubits and depth {depth}")
     circuit = random_circuit(10, depth)
-    circuit.draw()
+    # circuit.draw()
     config = qs.Configuration(number_of_shots=2**16)
     for method in ["default", "einsum", "loop", "numba"]:
         if method == "einsum" and depth > 600:
