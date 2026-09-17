@@ -190,7 +190,7 @@ def _apply_unitary_loop(
         The updated statevector after applying the operator as a tensor.
     """
     psi_new = np.copy(statevector)
-    N = len(statevector.shape)
+    N = int(np.log2(statevector.size))
     assert 0 <= qubit < N, "qubit index out of range"
 
     psi_new = statevector.copy()
@@ -222,7 +222,7 @@ def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.nda
     Returns:
         The updated statevector after applying the CNOT gate  as a tensor.
     """
-    N = len(statevector.shape)
+    N = int(np.log2(statevector.size))
 
     assert 0 <= control < N, "qubit index out of range"
     assert 0 <= target < N, "qubit index out of range"
@@ -233,7 +233,7 @@ def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.nda
         for s in range(2 ** (N - target - 1)):
             index = r + s * 2 ** (target + 1)
             partner = index + 2**target
-            if index[control] == 1:
+            if (index >> control) & 1:
                 psi_new[index] = statevector[partner]
                 psi_new[partner] = statevector[index]
     return psi_new
