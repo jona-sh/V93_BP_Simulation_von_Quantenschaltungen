@@ -18,7 +18,7 @@ Build the HTML documentation with running the following command in the docs fold
 
 .. code-block:: console
 
-   uv run .\\make.bat html
+   uv run .\make.bat html
 
 As you can see, our simulation performs much better than the Qiskit Aer backend. The screenshot below shows the performance of our simulation compared to the Qiskit Aer backend.
 
