@@ -204,20 +204,23 @@ def _apply_unitary_loop(
 def _apply_cx_einsum_loop(
     statevector: np.ndarray, control: int, target: int
 ) -> np.ndarray:
-
-    i, j = control, target
     N = len(statevector.shape)
 
     assert 0 <= control < N, "qubit index out of range"
     assert 0 <= target < N, "qubit index out of range"
     assert control != target, "control and target qubits must be different"
 
-    s = "cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    I = s[i]
-    J = s[j]
-    if i < j:
-        to = s[:i] + "a" + s[i + 1 : j] + "b" + s[j + 1 : N]
-    else:
-        to = s[:j] + "b" + s[j + 1 : i] + "a" + s[i + 1 : N]
-    psi_new = np.einsum(f"ab{I}{J},{s[:N]}->{to}", CX, statevector)
+    def _to_bin(index: int) -> tuple[int, ...]:
+        index_binary = format(index, f"0{N}b")
+        return tuple(int(bit) for bit in index_binary)[::-1]
+
+    psi_new = statevector.copy()
+    for r in range(2**target):
+        for s in range(2 ** (N - target - 1)):
+            index = r + s * 2 ** (target + 1)
+            partner = index + 2**target
+            index_binary = _to_bin(index)
+            if index_binary[control] == 1:
+                psi_new[index_binary] = statevector[_to_bin(partner)]
+                psi_new[_to_bin(partner)] = statevector[index_binary]
     return psi_new
