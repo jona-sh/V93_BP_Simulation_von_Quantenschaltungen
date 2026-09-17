@@ -33,7 +33,7 @@ def test_simulate_default_1():
 
 
 @pytest.mark.parametrize("seed", [1, 2, 3, 42, 1234])
-@pytest.mark.parametrize("simulation_method", ["default", "einsum", "loop"])
+@pytest.mark.parametrize("simulation_method", ["default", "einsum", "loop", "numba"])
 def test_random_circuit(seed, simulation_method):
     """test the simulation of a random circuit with 3 qubits"""
     tol = 400
