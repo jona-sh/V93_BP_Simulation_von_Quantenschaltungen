@@ -176,13 +176,16 @@ def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.n
 def _apply_unitary_loop(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
-
+    psi_new = np.copy(statevector)
     N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
-    s = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    I = s[qubit]
-    to = s[:qubit] + "a" + s[qubit + 1 : N]
-    psi_new = np.einsum(f"a{I},{s[:N]}->{to}", operator, statevector)
+    for index in np.ndindex(statevector.shape):
+        if index[qubit] != 0:
+            continue
+        index_one = index[:qubit] + (1,) + index[qubit + 1 :]
+        amplitudes = np.array([statevector[index], statevector[index_one]])
+        transformed = np.dot(operator, amplitudes)
+        psi_new[index], psi_new[index_one] = transformed
     return psi_new
 
 
