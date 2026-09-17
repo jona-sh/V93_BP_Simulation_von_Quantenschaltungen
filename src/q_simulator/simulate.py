@@ -179,13 +179,25 @@ def _apply_unitary_loop(
     psi_new = np.copy(statevector)
     N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
-    for index in np.ndindex(statevector.shape):
-        if index[qubit] != 0:
-            continue
-        index_one = index[:qubit] + (1,) + index[qubit + 1 :]
-        amplitudes = np.array([statevector[index], statevector[index_one]])
-        transformed = np.dot(operator, amplitudes)
-        psi_new[index], psi_new[index_one] = transformed
+
+    def _to_bin(index: int) -> tuple[int, ...]:
+        index_binary = format(index, f"0{N}b")
+        return tuple(int(bit) for bit in index_binary)[::-1]
+
+    psi_new = statevector.copy()
+    for r in range(2**qubit):
+        for s in range(2 ** (N - qubit - 1)):
+            index = r + s * 2 ** (qubit + 1)
+            partner = index + 2**qubit
+
+            psi_new[_to_bin(index)] = (
+                operator[0, 0] * statevector[_to_bin(index)]
+                + operator[0, 1] * statevector[_to_bin(partner)]
+            )
+            psi_new[_to_bin(partner)] = (
+                operator[1, 0] * statevector[_to_bin(index)]
+                + operator[1, 1] * statevector[_to_bin(partner)]
+            )
     return psi_new
 
 
