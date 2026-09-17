@@ -12,7 +12,7 @@ Simulation
 ----------
 
 .. automodule:: q_simulator.simulate
-   :members: simulate, _simulate_default, _simulate_einsum, _apply_unitary, _apply_cx_einsum, _apply_unitary_loop, _apply_cx_loop
+   :members: simulate, _simulate_default, _simulate_einsum, _simulate_loop, _apply_unitary, _apply_cx_einsum, _apply_unitary_loop, _apply_cx_loop
    :show-inheritance:
 
 Data objects and gates

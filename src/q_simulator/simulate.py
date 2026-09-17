@@ -1,6 +1,8 @@
 """Simulation backends and tensor-network gate operations."""
 
 import numpy as np
+
+# from numba import jit
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 
@@ -97,7 +99,7 @@ def _simulate_loop(qc: QuantumCircuit, config: Configuration) -> Result:
     num_qubits = transpiled_qc.num_qubits
     statevector = np.zeros(2**num_qubits, dtype=complex)
     statevector[0] = 1
-    state = np.reshape(statevector, (2,) * num_qubits, order="F")
+    state = statevector
 
     for instr in transpiled_qc.data:
         name = instr.operation.name
@@ -112,7 +114,7 @@ def _simulate_loop(qc: QuantumCircuit, config: Configuration) -> Result:
         else:
             raise ValueError(f"Unsupported gate: {name}")
 
-    final_statevector = np.reshape(state, -1, order="F")
+    final_statevector = state
     probabilities = np.abs(final_statevector) ** 2
     counts = {}
     for i, probability in enumerate(probabilities):
@@ -173,6 +175,7 @@ def _apply_cx_einsum(statevector: np.ndarray, control: int, target: int) -> np.n
     return psi_new
 
 
+# @jit
 def _apply_unitary_loop(
     statevector: np.ndarray, operator: np.ndarray, qubit: int
 ) -> np.ndarray:
@@ -190,27 +193,24 @@ def _apply_unitary_loop(
     N = len(statevector.shape)
     assert 0 <= qubit < N, "qubit index out of range"
 
-    def _to_bin(index: int) -> tuple[int, ...]:
-        index_binary = format(index, f"0{N}b")
-        return tuple(int(bit) for bit in index_binary)[::-1]
-
     psi_new = statevector.copy()
     for r in range(2**qubit):
         for s in range(2 ** (N - qubit - 1)):
             index = r + s * 2 ** (qubit + 1)
             partner = index + 2**qubit
 
-            psi_new[_to_bin(index)] = (
-                operator[0, 0] * statevector[_to_bin(index)]
-                + operator[0, 1] * statevector[_to_bin(partner)]
+            psi_new[index] = (
+                operator[0, 0] * statevector[index]
+                + operator[0, 1] * statevector[partner]
             )
-            psi_new[_to_bin(partner)] = (
-                operator[1, 0] * statevector[_to_bin(index)]
-                + operator[1, 1] * statevector[_to_bin(partner)]
+            psi_new[partner] = (
+                operator[1, 0] * statevector[index]
+                + operator[1, 1] * statevector[partner]
             )
     return psi_new
 
 
+# @jit
 def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.ndarray:
     """Apply a CNOT gate to the statevector using the fast loop method which was implemented for performance reasons.
 
@@ -228,17 +228,12 @@ def _apply_cx_loop(statevector: np.ndarray, control: int, target: int) -> np.nda
     assert 0 <= target < N, "qubit index out of range"
     assert control != target, "control and target qubits must be different"
 
-    def _to_bin(index: int) -> tuple[int, ...]:
-        index_binary = format(index, f"0{N}b")
-        return tuple(int(bit) for bit in index_binary)[::-1]
-
     psi_new = statevector.copy()
     for r in range(2**target):
         for s in range(2 ** (N - target - 1)):
             index = r + s * 2 ** (target + 1)
             partner = index + 2**target
-            index_binary = _to_bin(index)
-            if index_binary[control] == 1:
-                psi_new[index_binary] = statevector[_to_bin(partner)]
-                psi_new[_to_bin(partner)] = statevector[index_binary]
+            if index[control] == 1:
+                psi_new[index] = statevector[partner]
+                psi_new[partner] = statevector[index]
     return psi_new
