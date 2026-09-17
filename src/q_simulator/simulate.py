@@ -47,10 +47,10 @@ def _simulate_default(qc: QuantumCircuit, config: Configuration) -> Result:
     """
     qc_to_run = qc.copy()
     qc_to_run.save_statevector()
-
     backend = AerSimulator(
         fusion_enable=False, max_parallel_threads=1
     )  # to avoid race conditions in parallel execution
+    qc_to_run = transpile(qc_to_run, backend)
     result = backend.run(qc_to_run, shots=config.number_of_shots).result()
     counts = result.get_counts(qc_to_run)
     statevector = np.asarray(result.get_statevector(qc_to_run))
