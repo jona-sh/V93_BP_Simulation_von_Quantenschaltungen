@@ -32,7 +32,7 @@ Install the project and its dependencies with:
 ```console
 python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ q_simulator_bp_feljon
 ```
-or with [https://docs.astral.sh/uv/](uv)
+or with [uv](https://docs.astral.sh/uv/)
 
 ```console
 uv add install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ q_simulator_bp_feljon
