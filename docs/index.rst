@@ -16,7 +16,7 @@ Available simulation methods are:
 * ``loop``: Explicit Python loops.
 * ``numba``: Numba-compiled loops.
 
-As you can see, our simulation performs much better than the Qiskit Aer backend. The screenshot below shows the performance of our simulation compared to the Qiskit Aer backend.
+As you can see, our simulation performs better than the Qiskit Aer backend. The screenshot below shows the performance of our simulation compared to the Qiskit Aer backend.
 
 .. figure:: _static/simulation_performance.png
    :alt: Documentation screenshot
