@@ -5,6 +5,9 @@ University of Stuttgart practical course *Simulation von Quantenschaltungen*.
 It accepts Qiskit `QuantumCircuit` objects and returns the resulting
 statevector together with measurement probabilities or counts.
 
+## Dokumentation
+[Dokumentation](https://jona-sh.github.io/V93_BP_Simulation_von_Quantenschaltungen/index.html)
+
 ## Features
 
 - Simulation through the Qiskit Aer backend.
