@@ -1,6 +1,6 @@
 import numpy as np
 
-import q_simulator as qs
+import q_simulator_bp_feljon as qs
 
 
 def test_einsum_single():

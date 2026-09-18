@@ -1,6 +1,6 @@
-# q_simulator
+# q_simulator_bp_feljon
 
-`q_simulator` is an educational quantum-circuit simulator developed for the
+`q_simulator_bp_feljon` is an educational quantum-circuit simulator developed for the
 University of Stuttgart practical course *Simulation von Quantenschaltungen*.
 It accepts Qiskit `QuantumCircuit` objects and returns the resulting
 statevector together with measurement probabilities or counts.
@@ -38,7 +38,7 @@ uv sync
 ```python
 from qiskit import QuantumCircuit
 
-import q_simulator as qs
+import q_simulator_bp_feljon as qs
 
 circuit = QuantumCircuit(2)
 circuit.h(0)

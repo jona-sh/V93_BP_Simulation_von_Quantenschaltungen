@@ -1,4 +1,4 @@
-The q_simulator software is licensed under:
+The q_simulator_bp_feljon software is licensed under:
 
     SPDX-License-Identifier: LGPL-3.0-or-later
 

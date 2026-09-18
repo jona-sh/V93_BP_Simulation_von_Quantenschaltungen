@@ -4,7 +4,7 @@ from qiskit import QuantumCircuit
 from qiskit.quantum_info import Statevector
 from qiskit_aer import AerSimulator
 
-import q_simulator as qs
+import q_simulator_bp_feljon as qs
 
 
 def test_simulate_default_1():

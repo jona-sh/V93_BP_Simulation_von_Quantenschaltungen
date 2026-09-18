@@ -6,7 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from qiskit.circuit.random import random_circuit
 
-import q_simulator as qs
+import q_simulator_bp_feljon as qs
 
 data_qubits: dict[str, list[float]] = {
     "default": [],

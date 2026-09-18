@@ -1,5 +1,5 @@
 [project]
-name = "q_simulator"
+name = "q_simulator_bp_feljon"
 version = "0.1.0"
 description = "BP Uni Stuttgart - Simulation von Quantenschaltungen"
 readme = "README.md"

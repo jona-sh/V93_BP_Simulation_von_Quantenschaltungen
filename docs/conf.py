@@ -1,4 +1,4 @@
-"""Sphinx configuration for q_simulator."""
+"""Sphinx configuration for q_simulator_bp_feljon."""
 
 import sys
 from pathlib import Path
@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "q_simulator"
+project = "q_simulator_bp_feljon"
 copyright = "2026, Felix Gloistein, Jonas Höpker"
 author = "Felix Gloistein, Jonas Höpker"
 release = "0.0.1"
