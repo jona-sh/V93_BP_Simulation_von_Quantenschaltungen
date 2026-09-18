@@ -8,3 +8,4 @@ uv.lock
 .ruff_cache
 _build/
 _autosummary/
+dist/
