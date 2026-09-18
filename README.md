@@ -27,10 +27,15 @@ statevector together with measurement probabilities or counts.
 
 ## Installation
 
-From the repository root, install the project and its dependencies with:
+Install the project and its dependencies with:
 
 ```console
-uv sync
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ q_simulator_bp_feljon
+```
+or with [https://docs.astral.sh/uv/](uv)
+
+```console
+uv add install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ q_simulator_bp_feljon
 ```
 
 ## Usage
