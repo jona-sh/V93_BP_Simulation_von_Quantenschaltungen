@@ -22,6 +22,9 @@ extensions = [
     "sphinx.ext.napoleon",
     "myst_nb",
 ]
+myst_enable_extensions = [
+    "dollarmath",
+]
 
 autosummary_generate = True
 napoleon_google_docstring = True

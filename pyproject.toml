@@ -12,6 +12,7 @@ dependencies = [
     "matplotlib>=3.11.2",
     "numba>=0.67.0",
     "numpy>=2.5.3",
+    "pylatexenc>=2.11",
     "pytest>=9.1.1",
     "qiskit>=2.5.2",
     "qiskit-aer>=0.17.2",

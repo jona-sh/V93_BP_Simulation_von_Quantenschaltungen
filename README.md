@@ -9,6 +9,8 @@ statevector together with measurement probabilities or counts.
 
 - Simulation through the Qiskit Aer backend.
 - A NumPy tensor-based backend using `numpy.einsum`.
+- An explicit Python-loop backend.
+- A Numba-compiled loop backend.
 - Support for single-qubit gates and controlled-NOT gates in the einsum
   implementation.
 - Reusable configuration and result objects.
@@ -53,6 +55,8 @@ The available simulation methods are:
 
 - `"default"`: uses Qiskit Aer.
 - `"einsum"`: applies gates using NumPy tensor operations.
+- `"loop"`: applies gates using explicit Python loops.
+- `"numba"`: applies gates using Numba-compiled loops.
 
 If no configuration is supplied explicitly, `Configuration` defaults to the
 `"default"` method and `2**16` shots.
@@ -70,7 +74,5 @@ uv run pytest
 Build the HTML documentation with:
 
 ```console
-uv run sphinx-build -b html docs docs/_build/html
+uv run .\make.bat html
 ```
-
-The generated documentation is written to `docs/_build/html`.
