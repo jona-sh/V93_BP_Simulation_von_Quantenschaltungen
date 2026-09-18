@@ -1,0 +1,5 @@
+The q_simulator software is licensed under:
+
+    SPDX-License-Identifier: LGPL-3.0-or-later
+
+For the license text, see LICENSES/LGPL-3.0-or-later.txt.
